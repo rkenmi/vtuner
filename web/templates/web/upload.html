@@ -1,0 +1,15 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>Upload a file</h1>
+
+    <form action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Upload"/>
+    </form>
+
+    {{ filename }}
+  </body>
+</html>
