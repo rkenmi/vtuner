@@ -12,15 +12,15 @@ class TagReadWrite(object):
     TAG_REF_LOUDNESS = u'replaygain_reference_loudness'
 
     def __init__(self, filename):
-        print 'mp3/' + filename
         tags = self._get_tags_obj(filename)
-        #print os.path
-        track_data = []
-        album_data = []
-        track_data.append(self.read_obj(tags, u'TXXX:' + self.TAG_TRACK_GAIN, u'TXXX:' + self.TAG_TRACK_PEAK))
-        album_data.append(self.read_obj(tags, u'TXXX:' + self.TAG_ALBUM_GAIN, u'TXXX:' + self.TAG_ALBUM_PEAK))
-        print track_data
-        print album_data
+        if tags is not None:
+            track_data = []
+            album_data = []
+            track_data.append(self.read_obj(tags, u'TXXX:' + self.TAG_TRACK_GAIN, u'TXXX:' + self.TAG_TRACK_PEAK))
+            album_data.append(self.read_obj(tags, u'TXXX:' + self.TAG_ALBUM_GAIN, u'TXXX:' + self.TAG_ALBUM_PEAK))
+            print track_data
+            print album_data
+        
 
     def _get_tags_obj(self, filename):
         try:

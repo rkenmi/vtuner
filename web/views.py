@@ -7,6 +7,7 @@ from django.views import generic
 from django.utils import timezone
 from .forms import UploadFileForm
 from django.core.files.storage import default_storage
+from wsgiref.util import FileWrapper
 from web.vtunerRG.io import TagReadWrite
 from web.vtunerRG.calc_gain import CalcGain
 
@@ -37,24 +38,23 @@ class UploadView(generic.TemplateView):
 
 def upload_file(request):
     filename = ''
+    message = ''
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             file = request.FILES['mp3file']
             print default_storage.path(file)
-            tags = TagReadWrite(default_storage.path(file))
-            new_tags_data = CalcGain(default_storage.path(file))
-            tags.write_obj(default_storage.path(file), new_tags_data[0])
-            #print request.POST
-            #print request.FILES
-            #print file.close
-            #print type(file)
-            #print file.name
-            #TagReadWrite('web/')
-            #print file.temporary_file_path()
-            #default_storage.open(filename)
-
+            try:
+                tags = TagReadWrite(default_storage.path(file))
+                new_tags_data = CalcGain(default_storage.path(file))
+                tags.write_obj(default_storage.path(file), new_tags_data[0])
+                new_file = FileWrapper(open(default_storage.path(file)))
+                response = HttpResponse(new_file, content_type='audio/mpeg')
+                response['Content-Disposition'] = 'attachment; filename="%s"' % file.name
+                return response
+            except:
+                message = 'Error: is the file a proper MP3?'
 
     else:
         form = UploadFileForm()
@@ -62,6 +62,7 @@ def upload_file(request):
     return render(request, 'web/upload.html', {
         'form': form,
         'filename': filename,
+        'message': message,
     })
 
 
