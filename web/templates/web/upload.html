@@ -1,16 +1,12 @@
-<html>
-  <head>
-  </head>
-  <body>
-    <h1>Upload a file</h1>
+{% load staticfiles %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<h1>Upload a file</h1>
 
-    <form action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form }}
-      <input type="submit" value="Upload"/>
-    </form>
+<form action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Upload"/>
+</form>
 
-    <p>Status: {{ message }}</p>
-    <p>Loaded {{ filename }}</p>
-  </body>
-</html>
+<p>Status: {{ message }}</p>
+<p>Loaded {{ filename }}</p>
