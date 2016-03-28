@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
-import datetime
+import datetime, os, uuid
 
 from django.db import models
 from django.utils import timezone
+from django.core.files.storage import Storage, default_storage
 
 # Create your models here.
 class Question(models.Model):
@@ -24,5 +25,14 @@ class Choice(models.Model):
 	def __str__(self):
 		return self.choice_text
 
+
+
 class MP3(models.Model):
-	mp3file = models.FileField(upload_to='')
+	#uu = uuid.uuid4()
+	def get_upload_path(instance, filename):
+
+		#filename = "%s_%s" % (filename, uu)
+		return filename
+
+	mp3file = models.FileField(upload_to=get_upload_path)
+	#id = models.AutoField(primary_key=True)

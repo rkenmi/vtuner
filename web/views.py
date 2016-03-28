@@ -8,8 +8,9 @@ from django.utils import timezone
 from .forms import UploadFileForm
 from django.core.files.storage import default_storage
 from wsgiref.util import FileWrapper
-from web.vtunerRG.io import TagReadWrite
-from web.vtunerRG.calc_gain import CalcGain
+from web.vtunerRG.driver import ReplayGain
+from threading import Timer
+import os
 
 # Create your views here.
 
@@ -36,26 +37,31 @@ class UploadView(generic.TemplateView):
     form = UploadFileForm()
     template_name = 'web/upload.html'
 
-def upload_file(request):
-    filename = ''
-    message = ''
+def upload_file(request, filename = '', message = ''):
+
+    def timeout(args):
+        print args
+        os.remove(default_storage.path(args))
+
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
+            o = form.save(commit=False)
+            storage = o.mp3file.storage
+            file = storage.get_available_name(request.FILES['mp3file'].name)
+            print file
+            o.mp3file.name = file
             form.save()
-            file = request.FILES['mp3file']
-            print default_storage.path(file)
             try:
-                tags = TagReadWrite(default_storage.path(file))
-                new_tags_data = CalcGain(default_storage.path(file))
-                tags.write_obj(default_storage.path(file), new_tags_data[0])
+                ReplayGain(default_storage.path(file))
                 new_file = FileWrapper(open(default_storage.path(file)))
+                t = Timer(10, timeout, args=[file])
+                t.start()
                 response = HttpResponse(new_file, content_type='audio/mpeg')
-                response['Content-Disposition'] = 'attachment; filename="%s"' % file.name
+                response['Content-Disposition'] = 'attachment; filename="%s"' % file
                 return response
             except:
                 message = 'Error: is the file a proper MP3?'
-
     else:
         form = UploadFileForm()
 

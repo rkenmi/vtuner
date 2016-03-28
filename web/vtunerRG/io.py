@@ -20,7 +20,7 @@ class TagReadWrite(object):
             album_data.append(self.read_obj(tags, u'TXXX:' + self.TAG_ALBUM_GAIN, u'TXXX:' + self.TAG_ALBUM_PEAK))
             print track_data
             print album_data
-        
+
 
     def _get_tags_obj(self, filename):
         try:

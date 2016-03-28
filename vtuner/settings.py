@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-MEDIA_ROOT = os.path.join('./web/vtunerRG', 'mp3')
+MEDIA_ROOT = os.path.join('./web/static/web', 'mp3')
 MEDIA_URL = '/'
 
 # Application definition
