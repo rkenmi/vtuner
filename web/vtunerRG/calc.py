@@ -1,9 +1,8 @@
 import os.path
 import sys
 import util
-import pgi
+import gi
 
-pgi.install_as_gi()
 gi.require_version('Gst', '1.0')
 
 from gi.repository import GObject, Gst
