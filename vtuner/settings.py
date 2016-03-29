@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'vtuner.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
+        'NAME': 'dqa2ktl5s3sfc',
+        'USER': 'luusoqdwqfqeyc',
+        'PASSWORD': 'Jv6wF-VVIucrZLEofCpKNNJUdL',
+        'HOST': 'ec2-54-83-201-96.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
