@@ -1,1 +1,1 @@
-ska/pygobject
+pygtk
