@@ -2,7 +2,5 @@ Django==1.9.4
 mutagen==1.31
 psycopg2==2.6.1
 gunicorn==19.4.5
-requests==2.2.1
 urllib3==1.7.1
 wsgiref==0.1.2
-virtualenv==15.0.1
