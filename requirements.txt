@@ -6,4 +6,3 @@ requests==2.2.1
 urllib3==1.7.1
 wsgiref==0.1.2
 virtualenv==15.0.1
-pygobject
