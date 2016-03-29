@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'vtuner.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'dqa2ktl5s3sfc',
         'USER': 'luusoqdwqfqeyc',
         'PASSWORD': 'Jv6wF-VVIucrZLEofCpKNNJUdL',
