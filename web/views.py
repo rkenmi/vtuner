@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from .models import Question, Choice, MP3
 from django.views import generic
 from django.utils import timezone
+from django.utils.text import slugify
 from .forms import UploadFileForm
 from django.core.files.storage import default_storage
 from wsgiref.util import FileWrapper
@@ -49,7 +50,8 @@ def upload_file(request, filename = '', message = ''):
             o = form.save(commit=False)
             storage = o.mp3file.storage
             file = storage.get_available_name(request.FILES['mp3file'].name)
-            file = file.replace(" ", "-")
+            file = slugify(file)    # filename string must be safe!
+            file = file[:-3] + ".mp3"
             print "name: ", file
             o.mp3file.name = file
             form.save()
