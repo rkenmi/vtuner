@@ -25,7 +25,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '159.203.233.221']
 
 MEDIA_ROOT = os.path.join('./web/static/web', 'mp3')
 MEDIA_URL = '/'
