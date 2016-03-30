@@ -41,7 +41,7 @@ class UploadView(generic.TemplateView):
 def upload_file(request, filename = '', message = ''):
 
     def timeout(args):
-        print args
+        print "[Timer expired] Deleting " + args
         os.remove(default_storage.path(args))
 
     if request.method == 'POST':
@@ -49,19 +49,20 @@ def upload_file(request, filename = '', message = ''):
         if form.is_valid():
             o = form.save(commit=False)
             storage = o.mp3file.storage
-            file = storage.get_available_name(request.FILES['mp3file'].name)
-            file = slugify(file)    # filename string must be safe!
-            file = file[:-3] + ".mp3"
-            print "name: ", file
-            o.mp3file.name = file
+            raw_file_name = request.FILES['mp3file'].name
+            safe_file_name = slugify(raw_file_name)
+            safe_file_name = safe_file_name[:-3] + ".mp3"
+            new_file_name = storage.get_available_name(safe_file_name)
+            print "name: ", new_file_name
+            o.mp3file.name = new_file_name
             form.save()
             try:
-                ReplayGain(default_storage.path(file))
-                new_file = FileWrapper(open(default_storage.path(file)))
-                t = Timer(10, timeout, args=[file])
+                ReplayGain(default_storage.path(new_file_name))
+                new_file = FileWrapper(open(default_storage.path(new_file_name)))
+                t = Timer(10, timeout, args=[new_file_name])
                 t.start()
                 response = HttpResponse(new_file, content_type='audio/mpeg')
-                response['Content-Disposition'] = 'attachment; filename="%s"' % file
+                response['Content-Disposition'] = 'attachment; filename="%s"' % new_file_name
                 return response
             except:
                 message = 'Error: is the file a proper MP3?'
