@@ -47,14 +47,14 @@ def upload_file(request, filename = '', message = ''):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            o = form.save(commit=False)
-            storage = o.mp3file.storage
+            obj = form.save(commit=False)
+            storage = obj.mp3file.storage
             raw_file_name = request.FILES['mp3file'].name
             safe_file_name = slugify(raw_file_name)
             safe_file_name = safe_file_name[:-3] + ".mp3"
             new_file_name = storage.get_available_name(safe_file_name)
             print "name: ", new_file_name
-            o.mp3file.name = new_file_name
+            obj.mp3file.name = new_file_name
             form.save()
             try:
                 ReplayGain(default_storage.path(new_file_name))
@@ -63,6 +63,7 @@ def upload_file(request, filename = '', message = ''):
                 t.start()
                 response = HttpResponse(new_file, content_type='audio/mpeg')
                 response['Content-Disposition'] = 'attachment; filename="%s"' % new_file_name
+                response['Content-Length'] = len(response.content)
                 return response
             except:
                 message = 'Error: is the file a proper MP3?'
