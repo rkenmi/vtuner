@@ -49,7 +49,8 @@ def upload_file(request, filename = '', message = ''):
             o = form.save(commit=False)
             storage = o.mp3file.storage
             file = storage.get_available_name(request.FILES['mp3file'].name)
-            print file
+            file = file.replace(" ", "-")
+            print "name: ", file
             o.mp3file.name = file
             form.save()
             try:
