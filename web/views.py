@@ -50,7 +50,7 @@ def upload_file(request, filename = '', message = ''):
             obj = form.save(commit=False)
             storage = obj.mp3file.storage
             raw_file_name = request.FILES['mp3file'].name
-            safe_file_name = slugify(raw_file_name)
+            safe_file_name = slugify(raw_file_name, allow_unicode=True)
             safe_file_name = safe_file_name[:-3] + ".mp3"
             new_file_name = storage.get_available_name(safe_file_name)
             print "name: ", new_file_name
