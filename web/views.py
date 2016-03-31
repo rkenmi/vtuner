@@ -62,7 +62,8 @@ def upload_file(request, filename = '', message = ''):
                 t = Timer(10, timeout, args=[new_file_name])
                 t.start()
                 response = HttpResponse(new_file, content_type='audio/mpeg')
-                response['Content-Disposition'] = 'attachment; filename="%s"' % new_file_name
+                new_file_name = u'%s' % new_file_name
+                response['Content-Disposition'] = 'attachment; filename = %s' % new_file_name.encode('utf-8')
                 response['Content-Length'] = len(response.content)
                 return response
             except:
