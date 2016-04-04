@@ -1,0 +1,1 @@
+/home/rick/vtuner/vtuner/settings.py
