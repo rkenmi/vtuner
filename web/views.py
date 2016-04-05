@@ -15,28 +15,31 @@ import os
 
 # Create your views here.
 
-class IndexView(generic.ListView):
-    template_name = 'web/index.html'
-    context_object_name = 'latest_question_list'
+def calculate_gain(new_file_name):
+    try:
+        ReplayGain(default_storage.path(new_file_name))
+        new_file = FileWrapper(open(default_storage.path(new_file_name)))
+        t = Timer(10, timeout, args=[new_file_name])
+        t.start()
+        return new_file
+        #~
+    except:
+        message = 'Error: is the file a proper MP3?'
 
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
+def verify_file(raw_file_name, form):
+    # Retrieve mp3 object from the (user)submitted form
+    obj = form.save(commit=False)
+    storage = obj.mp3file.storage
 
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'web/detail.html'
-    def get_queryset(self):
-    	return Question.objects.filter(pub_date__lte=timezone.now())
+    safe_file_name = slugify(raw_file_name, allow_unicode=True)
+    safe_file_name = safe_file_name[:-3] + ".mp3"
+    new_file_name = storage.get_available_name(safe_file_name)
 
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'web/results.html'
-
-class UploadView(generic.TemplateView):
-    model = MP3
-    form = UploadFileForm()
-    template_name = 'web/upload.html'
+    print "name: ", new_file_name
+    obj.mp3file.name = new_file_name
+    form.save()
+    #new_file_name = u'%s' % new_file_name
+    return new_file_name
 
 def upload_file(request, filename = '', message = ''):
 
@@ -47,27 +50,14 @@ def upload_file(request, filename = '', message = ''):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            obj = form.save(commit=False)
-            storage = obj.mp3file.storage
             raw_file_name = request.FILES['mp3file'].name
-            safe_file_name = slugify(raw_file_name, allow_unicode=True)
-            safe_file_name = safe_file_name[:-3] + ".mp3"
-            new_file_name = storage.get_available_name(safe_file_name)
-            print "name: ", new_file_name
-            obj.mp3file.name = new_file_name
-            form.save()
-            try:
-                ReplayGain(default_storage.path(new_file_name))
-                new_file = FileWrapper(open(default_storage.path(new_file_name)))
-                t = Timer(10, timeout, args=[new_file_name])
-                t.start()
-                response = HttpResponse(new_file, content_type='audio/mpeg')
-                new_file_name = u'%s' % new_file_name
-                response['Content-Disposition'] = 'attachment; filename = %s' % new_file_name.encode('utf-8')
-                response['Content-Length'] = len(response.content)
-                return response
-            except:
-                message = 'Error: is the file a proper MP3?'
+            new_file_name = verify_file(raw_file_name, form)
+            new_file = calculate_gain(new_file_name)
+
+            response = HttpResponse(new_file, content_type='audio/mpeg')
+            response['Content-Disposition'] = 'attachment; filename = %s' % new_file_name.encode('utf-8')
+            response['Content-Length'] = len(response.content)
+            return response
     else:
         form = UploadFileForm()
 

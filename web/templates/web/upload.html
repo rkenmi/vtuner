@@ -1,11 +1,26 @@
 {% load staticfiles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <div class="jumbotron">
+
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">mp3Tuner</a>
+      </div>
+    </div>
+  </nav>
+
   <div class="container">
-    <h1>Upload a file</h1>
+    <h2>Change the volume of your MP3 file</h2>
     <form action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      {{ form }}
+      <p>Select a .mp3 file from your computer and click on the upload button.</p>{{ form.mp3file }}
       <input type="submit" value="Upload"/>
     </form>
   </div>
@@ -23,6 +38,6 @@
   <hr>
 
   <footer>
-    <p>vTuner</p>
+    <p>2016</p>
   </footer>
 </div> <!-- /container -->
