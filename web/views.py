@@ -59,7 +59,8 @@ def upload_file(request, raw_filename = '', message = ''):
                 new_file = change_file(new_filename)
 
                 response = HttpResponse(new_file, content_type='audio/mpeg')
-                response['Content-Disposition'] = 'attachment; filename= %s' % new_filename.encode('utf-8')
+                #response['Content-Disposition'] = 'attachment; filename= %s' % new_filename.encode('utf-8')
+                response['Content-Disposition'] = 'attachment; filename= %s' % "kappa.mp3"
                 response['Content-Length'] = len(response.content)
                 return response
             else:
