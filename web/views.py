@@ -53,7 +53,8 @@ def upload_file(request, raw_filename = '', message = ''):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             raw_filename = request.FILES['mp3file'].name
-            if request.FILES['mp3file'].content_type == 'audio/mpeg':
+            filetype = request.FILES['mp3file'].content_type
+            if filetype == 'audio/mpeg' or filetype == 'audio/mp3':
                 new_filename = verify_file(raw_filename, form)
                 new_file = change_file(new_filename)
 
