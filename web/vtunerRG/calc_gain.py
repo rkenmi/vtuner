@@ -4,7 +4,7 @@ from gi.repository import GObject
 import util
 
 
-def CalcGain(filename):
+def calc_gain(filename):
     exc_slot = [None]
 
     def on_track_start(evsrc, filename):

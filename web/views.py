@@ -22,7 +22,8 @@ def change_file(new_file_name):
         os.remove(default_storage.path(args))
 
     try:
-        ReplayGain(default_storage.path(new_file_name))
+        tags = ReplayGain(default_storage.path(new_file_name))
+        print tags
         new_file = FileWrapper(open(default_storage.path(new_file_name)))
         t = Timer(10, timeout, args=[new_file_name])
         t.start()
@@ -46,25 +47,28 @@ def verify_file(raw_file_name, form):
     #new_file_name = u'%s' % new_file_name
     return new_file_name
 
-def upload_file(request, filename = '', message = ''):
+def upload_file(request, raw_filename = '', message = ''):
 
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            raw_file_name = request.FILES['mp3file'].name
-            new_file_name = verify_file(raw_file_name, form)
-            new_file = change_file(new_file_name)
+            raw_filename = request.FILES['mp3file'].name
+            if request.FILES['mp3file'].content_type == 'audio/mpeg':
+                new_filename = verify_file(raw_filename, form)
+                new_file = change_file(new_filename)
 
-            response = HttpResponse(new_file, content_type='audio/mpeg')
-            response['Content-Disposition'] = 'attachment; filename = %s' % new_file_name.encode('utf-8')
-            response['Content-Length'] = len(response.content)
-            return response
+                response = HttpResponse(new_file, content_type='audio/mpeg')
+                response['Content-Disposition'] = 'attachment; filename= %s' % new_filename.encode('utf-8')
+                response['Content-Length'] = len(response.content)
+                return response
+            else:
+                message = "Invalid file type"
     else:
         form = UploadFileForm()
 
     return render(request, 'web/upload.html', {
         'form': form,
-        'filename': filename,
+        'filename': raw_filename,
         'message': message,
     })
 

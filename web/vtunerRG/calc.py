@@ -6,7 +6,7 @@ import gi
 gi.require_version('Gst', '1.0')
 
 from gi.repository import GObject, Gst
-from Track import Track # import Track class from Track.py
+from track import * # import Track class from Track.py
 
 
 # Initialize threading

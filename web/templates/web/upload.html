@@ -1,5 +1,9 @@
 {% load staticfiles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<script
+			  src="http://code.jquery.com/jquery-2.2.2.js"
+			  integrity="sha256-4/zUCqiq0kqxhZIyp4G0Gk+AOtCJsY1TA00k5ClsZYE="
+			  crossorigin="anonymous"></script>
 <div class="jumbotron">
 
   <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -11,33 +15,41 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">mp3Tuner</a>
+        <a class="navbar-brand" href="#">mp3rg</a>
       </div>
     </div>
   </nav>
 
   <div class="container">
-    <h2>Change the volume of your MP3 file</h2>
-    <form action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <p>Select a .mp3 file from your computer and click on the upload button.</p>{{ form.mp3file }}
-      <input type="submit" value="Upload"/>
-    </form>
+    <h2>Normalize your MP3 ReplayGain</h2>
+		<h4>A ReplayGain value will be applied to your .mp3 file based on loudness measurement and the target reference level (89 dB).</h4>
   </div>
 </div>
 
 <div class="container">
   <!-- Example row of columns -->
+	<form id="up_mp3" action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<p>Select a .mp3 file from your computer and click on the upload button.</p>{{ form.mp3file }}
+		<input type="submit" value="Upload"/>
+	</form>
   <div class="row">
     <div class="col-md-4">
-      <p>Status: {{ message }}</p>
-      <p>Loaded {{ filename }}</p>
+      <div id="status">
+        <p style="color: red">
+				{% if filename and message %}
+					{{ filename }} : {{ message }}
+				{% endif %}
+				</p>
+      </div>
     </div>
   </div>
 
   <hr>
-
-  <footer>
-    <p>2016</p>
-  </footer>
 </div> <!-- /container -->
+
+<script>
+$('#up_mp3').submit(function () {
+	$('#status').text('');
+});
+</script>
