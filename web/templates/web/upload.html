@@ -1,75 +1,48 @@
 {% load staticfiles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="{% static "web/style.css" %}">
 
+<script>
+  var d_url = "{% url "web:upload" %}";
+</script>
+
+<div class="container">
+  <div class="navbar">
+    <h1>mp3rg</h1>
+  </div>
+</div>
 
 <div class="jumbotron">
 
-  <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">mp3Tuner</a>
-      </div>
-    </div>
-  </nav>
-
   <div class="container">
-    <h2>Change the volume of your MP3 file</h2>
-    <form action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <p>Select a .mp3 file from your computer and click on the upload button.</p>{{ form.mp3file }}
-      <input type="submit" value="Upload"/>
-    </form>
+    <h2>Normalize your MP3 ReplayGain</h2>
+    <p>A ReplayGain value is applied to your .mp3 file based on the file's loudness measurement and the target reference level (89 dB).</p>
   </div>
 </div>
 
 <div class="container">
   <!-- Example row of columns -->
   <div class="row">
-    <div class="col-md-4">
-      <p>Status: <span id="msg">{{ message }}</span></p>
-      <p>Loaded {{ filename }}</p>
+    <div class="col-md-12">
+      <form action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>Select a .mp3 file from your computer and click on the upload button.</p>{{ form.mp3file }}
+        <input type="submit" value="Upload"/>
+      </form>
+      <p id="msg">Ready</p>
+      <div id="progressbar"></div>
     </div>
   </div>
 
   <hr>
 
   <footer>
-    <p>2016</p>
+    <p>rkenmi@gmail.com, 2016</p>
   </footer>
 </div> <!-- /container -->
 
-<script>
-var ajaxFileUpload = function (data) {
-    var xhr = new XMLHttpRequest();
-		xhr.onload = function(e) { console.log('PogChamp')};
-
-		//xhr.open("POST", '{% url "web:upload" %}', true);
-    xhr.upload.onprogress = function (evt) {
-        // file upload is complete
-        console.log(evt.loaded);
-				$('#status').text(evt.loaded);
-    };
-    xhr.send(data);
-};
-</script>
-
-<script>
-var form = document.querySelector("form");
-
-form.addEventListener("submit", function (e) {
-    var fdata = new FormData(this);
-
-    ajaxFileUpload(fdata);
-
-    // Prevents the standard submit event
-    e.preventDefault();
-    return false;
-}, false);
-</script>
+<script src="{% static "web/scripts.js" %}"></script>

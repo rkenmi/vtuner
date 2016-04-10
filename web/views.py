@@ -49,6 +49,7 @@ def verify_file(raw_file_name, form):
 
 def upload_file(request, raw_filename = '', message = ''):
 
+    #print request.is_ajax()
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -57,10 +58,8 @@ def upload_file(request, raw_filename = '', message = ''):
             if filetype == 'audio/mpeg' or filetype == 'audio/mp3':
                 new_filename = verify_file(raw_filename, form)
                 new_file = change_file(new_filename)
-
-                response = HttpResponse(new_file, content_type='audio/mpeg')
-                #response['Content-Disposition'] = 'attachment; filename= %s' % new_filename.encode('utf-8')
-                response['Content-Disposition'] = 'attachment; filename= %s' % "kappa.mp3"
+                response = HttpResponse(new_file, content_type='application/download')
+                response['Content-Disposition'] = 'attachment; filename= %s' % new_filename.encode('utf-8')
                 response['Content-Length'] = len(response.content)
                 return response
             else:
@@ -73,22 +72,3 @@ def upload_file(request, raw_filename = '', message = ''):
         'filename': raw_filename,
         'message': message,
     })
-
-
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'web/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('web:results', args=(question.id,)))
