@@ -2,6 +2,15 @@ $(function(){
   $("#progressbar").progressbar({
     value: 0
   });
+
+  $("label input[type='radio']").change(function(){
+    if ($(this).hasClass('more'))
+      $('input[name="custom_val"]').prop('disabled', false);
+    else {
+      $('input[name="custom_val"]').prop('disabled', true);
+    }
+  });
+
 });
 
 var ajaxFileUpload = function (data) {
@@ -44,29 +53,65 @@ var ajaxFileUpload = function (data) {
       });
     };
 
-		xhr.open("POST", d_url, true);
+		xhr.open("POST", djurl, true);
     xhr.upload.onprogress = function (evt) {
-        filename = data.get('mp3file').name;
-        $("#msg").text("Uploading " + filename + " : " + (evt.loaded / evt.total) * 100 + "%");
-        $("#progressbar").progressbar({
-          value: (evt.loaded / evt.total) * 100
-        });
+      filename = $("#id_mp3file").text();
+      $("#msg").css('color', 'black');
+      if ((evt.loaded / evt.total) != 1)
+  		  $("#msg").text("Uploading " + filename + " : " + ((evt.loaded / evt.total) * 100).toFixed(2) + "%");
+      else
+		    $("#msg").text("Processing...");
+      $("#progressbar").progressbar({
+        value: (evt.loaded / evt.total) * 100
+      });
     };
     xhr.send(data);
 };
 
 
 var form = document.querySelector("form");
-form.addEventListener("submit", function (e) {
-    var fdata = new FormData(this);
 
+form.addEventListener("submit", function (e) {
+
+    form["custom_val"].value = parseInt(form["custom_val"].value);
+    if (!form["mp3file"].value){
+      // Prevents the standard submit event
+      e.preventDefault();
+      $("#msg").css('color', 'red');
+      $("#msg").text("Error: Please choose a .mp3 file.");
+      return false;
+    }
+
+    if (!form["options"].value){
+      // Prevents the standard submit event
+      e.preventDefault();
+      $("#msg").css('color', 'red');
+      $("#msg").text("Error: Please select a proper ReplayGain option.");
+      return false;
+    }
+
+    if (form["options"].value == 'custom' && (isNaN(form["custom_val"].value))){
+      // Prevents the standard submit event
+      e.preventDefault();
+      $("#msg").css('color', 'red');
+      $("#msg").text("Error: Invalid entry for the custom ReplayGain value. Please enter a number from -25 to 25.");
+      return false;
+    }else if (form["options"].value == 'custom' && (form["custom_val"].value > 25 || form["custom_val"].value < -25)){
+      e.preventDefault();
+      $("#msg").css('color', 'red');
+      $("#msg").text("Error: Number entry is too high or too low. Please enter a number from -25 to 25.");
+      return false;
+    }else if (form["options"].value == 'normalize'){
+      form["custom_val"].value = null;
+    }
+
+    var fdata = new FormData(this);
     ajaxFileUpload(fdata);
 
     // Prevents the standard submit event
     e.preventDefault();
     return false;
 }, false);
-
 
 $("#id_mp3file").click(function(){
   $("#progressbar").progressbar({

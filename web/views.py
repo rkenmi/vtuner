@@ -15,14 +15,14 @@ import os
 
 # Create your views here.
 
-def change_file(new_file_name):
+def change_file(new_file_name, custom_gain):
 
     def timeout(args):
         print "[Timer expired] Deleting " + args
         os.remove(default_storage.path(args))
 
     try:
-        tags = ReplayGain(default_storage.path(new_file_name))
+        tags = ReplayGain(default_storage.path(new_file_name), custom_gain)
         print tags
         new_file = FileWrapper(open(default_storage.path(new_file_name)))
         t = Timer(10, timeout, args=[new_file_name])
@@ -53,11 +53,17 @@ def upload_file(request, raw_filename = '', message = ''):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
+
             raw_filename = request.FILES['mp3file'].name
             filetype = request.FILES['mp3file'].content_type
             if filetype == 'audio/mpeg' or filetype == 'audio/mp3':
+                if 'custom_val' in request.POST:
+                    custom_gain = request.POST['custom_val']
+                else:
+                    custom_gain = None
+                print custom_gain
                 new_filename = verify_file(raw_filename, form)
-                new_file = change_file(new_filename)
+                new_file = change_file(new_filename, custom_gain)
                 response = HttpResponse(new_file, content_type='application/download')
                 response['Content-Disposition'] = 'attachment; filename= %s' % new_filename.encode('utf-8')
                 response['Content-Length'] = len(response.content)

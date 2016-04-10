@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{% static "web/style.css" %}">
 
 <script>
-  var d_url = "{% url "web:upload" %}";
+  var djurl = "{% url 'web:upload' %}";
 </script>
 
 <div class="container">
@@ -28,10 +28,16 @@
   <!-- Example row of columns -->
   <div class="row">
     <div class="col-md-12">
-      <form action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
+      <form id="mp3form" action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <p>Select a .mp3 file from your computer and click on the upload button.</p>{{ form.mp3file }}
-        <input type="submit" value="Upload"/>
+        <p>Select a .mp3 file from your computer and click on the upload button.</p>
+        {{ form.mp3file }}
+        <label>
+          <input id="opt1_1" type="radio" name="options" value="normalize" checked>Normalize
+          <input id="opt1_2" type="radio" name="options" value="custom" class="more">Custom:  <input name="custom_val" type="text" value="" maxlength="3" size="2" disabled/> dB
+        </label>
+        <br/>
+        <input id="form_submit" type="submit" value="Upload"/>
       </form>
       <p id="msg">Ready</p>
       <div id="progressbar"></div>
