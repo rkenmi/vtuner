@@ -1,7 +1,7 @@
 {% load staticfiles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="{% static "web/style.css" %}">
@@ -37,6 +37,7 @@
           <input id="opt1_2" type="radio" name="options" value="custom" class="more">Custom:  <input name="custom_val" type="text" value="" maxlength="3" size="2" disabled/> dB
         </label>
         <br/>
+        <p>{{ message }}</p>
         <input id="form_submit" type="submit" value="Upload"/>
       </form>
       <p id="msg">Ready</p>
@@ -44,11 +45,10 @@
     </div>
   </div>
 
-  <hr>
+  <hr/>
 
   <footer>
     <p>rkenmi@gmail.com, 2016</p>
   </footer>
 </div> <!-- /container -->
-
 <script src="{% static "web/scripts.js" %}"></script>
