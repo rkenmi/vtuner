@@ -94,42 +94,32 @@ var ajaxFileUpload = function (data) {
 var form = document.querySelector("form");
 
 form.addEventListener("submit", function (e) {
+    // Prevents the standard submit event. We don't want double POSTS...
+    e.preventDefault();
 
     $("#msg").css('color', 'red');
     form["custom_val"].value = parseInt(form["custom_val"].value);
     if (!form["mp3file"].value){
-      // Prevents the standard submit event
-      e.preventDefault();
       $("#msg").text("Error: Please choose a .mp3 file.");
-      return false;
-    }
-
-    if (!form["options"].value){
-      // Prevents the standard submit event
-      e.preventDefault();
+    }else if (form["mp3file"].files[0].type !== 'audio/mpeg' && form["mp3file"].files[0].type !== 'audio/mp3'){
+      $("#msg").text("Error: Invalid file type. Choose a .mp3 file.");
+    }else if (form["mp3file"].files[0].size > 15000000){
+      $("#msg").text("Error: File size too large (" + (form["mp3file"].files[0].size / Math.pow(10, 6)).toFixed(2) + "MB )");
+    }else if (!form["options"].value){
       $("#msg").text("Error: Please select a proper ReplayGain option.");
-      return false;
-    }
-
-    if (form["options"].value == 'custom' && (isNaN(form["custom_val"].value))){
-      // Prevents the standard submit event
-      e.preventDefault();
+    }else if (form["options"].value == 'custom' && (isNaN(form["custom_val"].value))){
       $("#msg").text("Error: Invalid entry for the custom ReplayGain value. Please enter a number from -25 to 25.");
-      return false;
     }else if (form["options"].value == 'custom' && (form["custom_val"].value > 25 || form["custom_val"].value < -25)){
-      e.preventDefault();
       $("#msg").text("Error: Number entry is too high or too low. Please enter a number from -25 to 25.");
-      return false;
-    }else if (form["options"].value == 'normalize'){
-      form["custom_val"].value = null;
+    }else{
+      if (form["options"].value == 'normalize'){
+        form["custom_val"].value = null;
+      }
+      $("#msg").css('color', 'black');
+
+      var fdata = new FormData(this);
+      ajaxFileUpload(fdata);
     }
-    $("#msg").css('color', 'black');
-
-    var fdata = new FormData(this);
-    ajaxFileUpload(fdata);
-
-    // Prevents the standard submit event
-    e.preventDefault();
     return false;
 }, false);
 

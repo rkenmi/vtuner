@@ -30,7 +30,7 @@
     <div class="col-md-12">
       <form id="mp3form" action="{% url "web:upload" %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <p>Select a .mp3 file from your computer and click on the upload button.</p>
+        <p>Select a .mp3 file from your computer and click on the upload button. (Max file size limit: 15MB)</p>
         {{ form.mp3file }}
         <label>
           <input id="opt1_1" type="radio" name="options" value="normalize" checked>Normalize
