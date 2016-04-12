@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 # from django.template import loader
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 from .models import Question, Choice, MP3
 from django.views import generic
@@ -49,12 +49,20 @@ def verify_file(raw_file_name, form):
 
 def upload_file(request, raw_filename = '', message = ''):
 
-    #print request.is_ajax()
     if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
 
-            raw_filename = request.FILES['mp3file'].name
+        #print request.META
+        raw_filename = request.FILES['mp3file'].name
+        form = UploadFileForm(request.POST, request.FILES)
+        if request.FILES['mp3file'].size > 15000000:
+            print "SIZE: ", request.FILES['mp3file'].size
+            message = "File size too large"
+            return JsonResponse({
+                'error': 1,
+                'message': message,
+                'filename': raw_filename
+            })
+        elif form.is_valid():
             filetype = request.FILES['mp3file'].content_type
             if filetype == 'audio/mpeg' or filetype == 'audio/mp3':
                 if 'custom_val' in request.POST:
@@ -70,6 +78,11 @@ def upload_file(request, raw_filename = '', message = ''):
                 return response
             else:
                 message = "Invalid file type"
+                return JsonResponse({
+                    'error': 2,
+                    'message': message,
+                    'filename': raw_filename
+                })
     else:
         form = UploadFileForm()
 
