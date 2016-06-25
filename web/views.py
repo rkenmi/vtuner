@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404
-# from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 from .models import Question, Choice, MP3
@@ -13,11 +12,24 @@ from web.app.driver import ReplayGain
 from threading import Timer
 import os
 
-# Create your views here.
 
 def change_file(new_file_name, custom_gain):
+    """ Applys ReplayGain to the file and renames the file. Serves the file
+        afterwards.
 
+        Parameters:
+            new_file_name : String that contains the new file name
+            custom_gain : float that contains new custom gain value
+
+        Returns:
+            new_file : The new data file to be sent through HttpResponse
+    """
     def timeout(args):
+        """ After a certain time period, delete the file from the local system.
+
+            Parameters:
+                args : A list which contains the file name to be deleted
+        """
         print "[Timer expired] Deleting " + args
         os.remove(default_storage.path(args))
 
@@ -28,11 +40,20 @@ def change_file(new_file_name, custom_gain):
         t = Timer(10, timeout, args=[new_file_name])
         t.start()
         return new_file
-        #~
     except:
         message = 'Error: is the file a proper MP3?'
 
-def verify_file(raw_file_name, form):
+
+def fix_name(raw_file_name, form):
+    """ Given a raw file name, generate a safe file name for serving
+
+        Parameters:
+            raw_file_name : String that contains the old file name
+            form : Django Form object
+
+        Returns:
+            new_file_name : a new safe file name for serving
+    """
     # Retrieve mp3 object from the (user)submitted form
     obj = form.save(commit=False)
     storage = obj.mp3file.storage
@@ -44,14 +65,23 @@ def verify_file(raw_file_name, form):
     print "name: ", new_file_name
     obj.mp3file.name = new_file_name
     form.save()
-    #new_file_name = u'%s' % new_file_name
+    #  new_file_name = u'%s' % new_file_name
     return new_file_name
 
-def upload_file(request, raw_filename = '', message = ''):
 
+def upload_file(request, raw_filename='', message=''):
+    """ Upload a file. If the file is a valid MP3 type, the upload process is
+        started.
+
+        Parameters:
+            request         : the HTTP GET or POST request
+            raw_filename    : the original file name via upload
+            message         : a message to be returned in response
+
+        Returns:
+            JsonResponse if the request method is POST, otherwise HttpResponse
+    """
     if request.method == 'POST':
-
-        #print request.META
         raw_filename = request.FILES['mp3file'].name
         form = UploadFileForm(request.POST, request.FILES)
         if request.FILES['mp3file'].size > 15000000:
@@ -70,10 +100,13 @@ def upload_file(request, raw_filename = '', message = ''):
                 else:
                     custom_gain = None
                 print custom_gain
-                new_filename = verify_file(raw_filename, form)
+                new_filename = fix_name(raw_filename, form)
                 new_file = change_file(new_filename, custom_gain)
-                response = HttpResponse(new_file, content_type='application/download')
-                response['Content-Disposition'] = 'attachment; filename= %s' % new_filename.encode('utf-8')
+                response = HttpResponse(
+                    new_file, content_type='application/download'
+                )
+                cd = 'attachment; filename= %s' % new_filename.encode('utf-8')
+                response['Content-Disposition'] = cd
                 response['Content-Length'] = len(response.content)
                 return response
             else:
