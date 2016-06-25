@@ -9,7 +9,7 @@ from django.utils.text import slugify
 from .forms import UploadFileForm
 from django.core.files.storage import default_storage
 from wsgiref.util import FileWrapper
-from web.vtunerRG.driver import ReplayGain
+from web.app.driver import ReplayGain
 from threading import Timer
 import os
 
