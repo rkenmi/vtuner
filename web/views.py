@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
-from .models import Question, Choice, MP3
+from .models import MP3
 from django.views import generic
 from django.utils import timezone
 from django.utils.text import slugify
