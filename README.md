@@ -8,4 +8,4 @@ vtuner is a web app that uses low-level C-wrapper Python modules to work with th
 
 ReplayGain allows music players to normalize loudness for individual tracks or albums. 
 
-ReplayGain is supported in a large number of media players and portable media players/digital audio players. It is loosely based on the Python package <a href="https://pypi.python.org/pypi/rgain">rgain</a>, however the features of vtuner are minimal (only for single mp3 files) to demonstrate it as a web app.
+ReplayGain is supported in a large number of media players and portable media players/digital audio players. It is loosely based on the Python package <a href="https://pypi.python.org/pypi/rgain">rgain</a>, however the features of vtuner are minimal (only for single mp3 files) to demonstrate it as a web app using Django.
